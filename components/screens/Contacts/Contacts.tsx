@@ -1,4 +1,4 @@
-import { View, Text, PermissionsAndroid, FlatList, StyleSheet } from 'react-native'
+import { View, Text, PermissionsAndroid, FlatList, StyleSheet, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Contact from 'react-native-contacts';
 
@@ -6,10 +6,13 @@ const Contacts = () => {
 
     // All the states are here
     const [data, setData] = useState();
+    // const [displayName, setDisplayName] = useState('');
+    // const [firstLetter, setFirstLetter] = useState('');
 
     // useEffect function are here
     useEffect(() => {
         getPermission()
+        // firstLettersFunction();
       }, [])
 
     // All the functions are here  
@@ -37,16 +40,37 @@ const Contacts = () => {
         }
         )
     }
+    
+    // const firstLettersFunction = (displayName) => {
+    //     const result = (displayName.displayName).split(' ').map(word => word.charAt(0).toUpperCase()).join('');
+    //     setFirstLetter(result);
 
+    // }
     const renderItem = ({item}) => {
+        const firstName = item.givenName;
+        const letterOfFirstName = firstName.charAt(0).toUpperCase();
+
+        const familyName = item.familyName;
+        const letterOfFamilyName = familyName.charAt(0).toUpperCase();
+
+        const hasThumbNail = item.hasThumbnail;
+
+        let colors = ['#B9E9FC', '#AAE3E2', '#B3E5BE', '#abcdef'];
+        let index = item.recordID;
+        
+        // setDisplayName(item.displayName)
         return(
             <View style={styles.contactItemParentContainer}>
 
             <View style={styles.contactItemContainer}>
                 <View style={styles.contactThumbNailContainer}>
-                    <View style={styles.contactThumbNail}>
-                        <Text style={styles.contactThumbNailText}>UP</Text>
+                    <>
+                        {hasThumbNail ? (<Image style={styles.thumbNailImage} source={{uri: item.thumbnailPath}} />) : (
+                    <View style={[styles.contactThumbNail, {backgroundColor: colors[index % colors.length]}]}>
+                            <Text style={styles.contactThumbNailText}>{letterOfFirstName}{letterOfFamilyName}</Text>
                     </View>
+                            )}
+                    </>
                 </View>
                 <View style={styles.contactDetailsContainer}>
                     <Text style={styles.contactName}>{item.displayName}</Text>
@@ -83,30 +107,46 @@ const styles = StyleSheet.create({
     contactItemParentContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+        margin: 1.5,
     },
     contactItemContainer: {
         borderColor: 'black',
         // borderWidth: 1,
         borderBottomWidth: 1,
+        borderRadius: 10,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         padding: 5,
         width: '95%',
+        // margin: 1.5,
+
     },
     contactThumbNailContainer: {
         // borderColor: 'black',
         // borderWidth: 1,
         flex: 0.5,
     },
+    thumbNailImage: {
+        height: 45,
+        width: 50,
+        borderColor: 'black',
+        borderWidth: 1,
+        // paddingHorizontal: 15,
+        // paddingVertical: 10,
+        padding: 6,
+        borderRadius: 100,
+        alignItems: 'center',
+        width: 50,
+    },
     contactThumbNail: {
         borderColor: 'black',
         borderWidth: 1,
         // paddingHorizontal: 15,
         // paddingVertical: 10,
-        padding: 10,
+        padding: 6,
         borderRadius: 100,
         alignItems: 'center',
-        width: 60,
+        width: 50,
 
     },
     contactThumbNailText: {
@@ -123,7 +163,7 @@ const styles = StyleSheet.create({
     },
     contactName: {
         fontSize: 17,
-        paddingLeft: 20,
+        // paddingLeft: 1,
     },
     contactDetails:{
         fontSize: 17,
